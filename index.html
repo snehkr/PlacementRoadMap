@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placement Preparation Roadmaps</title>
+  <!-- Chosen Palette: Neutral Professional -->
+  <!-- Application Structure Plan: A centralized hub page using a responsive grid layout. Each grid item is a "card" representing a specific subject roadmap. This card-based design is intuitive, scalable, and provides a clear, visual entry point to each detailed study plan. It allows users to easily see all available subjects at a glance and choose their desired path. -->
+  <!-- Visualization & Content Choices: 
+    - Report Info: Collection of all roadmaps. Goal: Organize/Navigate. Viz: Card Grid Layout. Interaction: Click on a card to navigate. Justification: A grid of cards is a standard and highly effective UI pattern for a dashboard or hub page, offering clear separation and easy access to different sections. Method: HTML/Tailwind.
+    -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+      color: #343a40;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      border: 1px solid #e9ecef;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .card-button {
+      display: inline-block;
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      text-align: center;
+      transition: background-color 0.2s;
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+  <div class="container mx-auto px-4 py-12 md:py-16">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Placement Preparation Roadmaps</h1>
+      <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Your central hub for mastering key computer science
+        subjects for technical interviews.</p>
+    </header>
+
+    <main id="roadmap-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Roadmap cards will be injected here by JS -->
+    </main>
+
+    <footer class="text-center mt-16 text-gray-500">
+      <p>Select a subject to begin your interactive preparation journey.</p>
+    </footer>
+  </div>
+
+  <script>
+    const roadmaps = [
+      {
+        title: "Operating Systems",
+        description: "Master processes, scheduling, memory management, and synchronization.",
+        link: "pages/os_roadmap_spa_v1.html",
+        color: "bg-blue-600 hover:bg-blue-700",
+        borderColor: "border-blue-200"
+      },
+      {
+        title: "DBMS & SQL",
+        description: "Learn database design, normalization, and advanced SQL queries.",
+        link: "pages/dbms_roadmap_spa_v1.html",
+        color: "bg-indigo-600 hover:bg-indigo-700",
+        borderColor: "border-indigo-200"
+      },
+      {
+        title: "Computer Networks",
+        description: "Understand the OSI model, TCP/IP, and key application layer protocols.",
+        link: "pages/cn_roadmap_spa_v1.html",
+        color: "bg-teal-600 hover:bg-teal-700",
+        borderColor: "border-teal-200"
+      },
+      {
+        title: "DSA & OOPS",
+        description: "Build a strong foundation in data structures, algorithms, and OOPS principles.",
+        link: "pages/dsa_oops_roadmap_spa_v1.html",
+        color: "bg-emerald-600 hover:bg-emerald-700",
+        borderColor: "border-emerald-200"
+      },
+      {
+        title: "DSA in Python",
+        description: "Solve DSA problems efficiently using Python's powerful features and libraries.",
+        link: "pages/dsa_python_roadmap_spa_v1.html",
+        color: "bg-sky-600 hover:bg-sky-700",
+        borderColor: "border-sky-200"
+      },
+      {
+        title: "MongoDB",
+        description: "Explore NoSQL concepts, data modeling, and the aggregation framework.",
+        link: "pages/mongodb_roadmap_spa_v1.html",
+        color: "bg-green-600 hover:bg-green-700",
+        borderColor: "border-green-200"
+      },
+      {
+        title: "MySQL",
+        description: "Deep dive into the world's most popular open-source relational database.",
+        link: "pages/mysql_roadmap_spa_v1.html",
+        color: "bg-orange-500 hover:bg-orange-600",
+        borderColor: "border-orange-200"
+      },
+      {
+        title: "Python (Basic to Advanced)",
+        description: "A complete guide to the Python language for aspiring developers and data scientists.",
+        link: "pages/python_full_roadmap_spa_v1.html",
+        color: "bg-yellow-500 hover:bg-yellow-600",
+        borderColor: "border-yellow-200"
+      },
+      {
+        title: "HR Interview",
+        description: "Prepare for behavioral questions, company research, and salary negotiation.",
+        link: "pages/hr_interview_roadmap_spa_v1.html",
+        color: "bg-rose-500 hover:bg-rose-600",
+        borderColor: "border-rose-200"
+      },
+      {
+        title: "Aptitude (All Sections)",
+        description: "Sharpen your quantitative, logical, and verbal skills for aptitude tests.",
+        link: "pages/aptitude_roadmap_spa_v1.html",
+        color: "bg-purple-600 hover:bg-purple-700",
+        borderColor: "border-purple-200"
+      }
+    ];
+
+    function renderCards() {
+      const gridEl = document.getElementById('roadmap-grid');
+      gridEl.innerHTML = '';
+      roadmaps.forEach(roadmap => {
+        const card = document.createElement('div');
+        card.className = `card flex flex-col p-6 ${roadmap.borderColor}`;
+        card.innerHTML = `
+                    <div class="flex-grow">
+                        <h2 class="card-title text-gray-800">${roadmap.title}</h2>
+                        <p class="mt-2 text-gray-600">${roadmap.description}</p>
+                    </div>
+                    <div class="mt-6">
+                        <a href="${roadmap.link}" class="card-button text-white ${roadmap.color}">
+                            Start Learning &rarr;
+                        </a>
+                    </div>
+                `;
+        gridEl.appendChild(card);
+      });
+    }
+
+    // Initial render
+    renderCards();
+  </script>
+</body>
+
+</html>

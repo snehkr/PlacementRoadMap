@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive DSA in Python Placement Roadmap</title>
+  <!-- Chosen Palette: Pythonic Blue -->
+  <!-- Application Structure Plan: The application transforms the linear text roadmap into an interactive dashboard. A persistent sidebar shows overall progress via a donut chart and weekly navigation links with individual progress bars. The main content area dynamically displays the selected week's topics in an accordion format, allowing users to expand/collapse subjects. This structure enhances usability by breaking down the content into manageable, user-selected chunks and provides immediate visual feedback on progress, which is more engaging than a static document. -->
+  <!-- Visualization & Content Choices: 
+    - Report Info: Overall study progress. Goal: Inform/Motivate. Viz: Donut Chart. Interaction: Updates automatically as user checks off items. Justification: Provides a clear, at-a-glance summary of completion. Library: Chart.js.
+    - Report Info: Weekly progress. Goal: Inform. Viz: HTML/Tailwind Progress Bars. Interaction: Updates with checkboxes. Justification: Granular feedback for each section. Method: HTML/JS.
+    - Report Info: Hierarchical topics (e.g., Week -> Topic -> Sub-topic). Goal: Organize. Presentation: Interactive Accordion. Interaction: Click to expand/collapse. Justification: Reduces initial cognitive load and allows users to focus on one topic at a time. Method: HTML/JS.
+    - Report Info: Python Core Data Structures. Goal: Organize/Inform. Viz: HTML/CSS Diagram. Interaction: Static visual. Justification: A visual summary is more intuitive for recalling the properties of Python's built-in collections. Method: HTML/Tailwind.
+    - Report Info: All study items. Goal: Track progress. Presentation: Checkboxes. Interaction: Click to check/uncheck. Justification: Makes the roadmap an active tool rather than a passive document. Method: HTML/JS.
+    -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #FDFBF7;
+      color: #4A4A4A;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 200px;
+      max-height: 200px;
+    }
+
+    .progress-bar-bg {
+      background-color: #EAE5E0;
+    }
+
+    .progress-bar-fill {
+      background-color: #3572A5;
+      transition: width 0.5s ease-in-out;
+    }
+
+    .nav-item.active {
+      background-color: #D1E5F0;
+      color: #333;
+      font-weight: 600;
+    }
+
+    details>summary {
+      list-style: none;
+    }
+
+    details>summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details[open] summary .arrow {
+      transform: rotate(90deg);
+    }
+
+    .arrow {
+      transition: transform 0.2s;
+    }
+
+    .ds-property {
+      border: 2px solid;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+  <div class="flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-full md:w-72 lg:w-80 bg-white border-r border-gray-200 p-6 flex-shrink-0">
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">DSA in Python Roadmap</h1>
+      <p class="text-sm text-gray-500 mb-6">Track your preparation for placements.</p>
+
+      <div class="chart-container mb-6">
+        <canvas id="progressChart"></canvas>
+        <div id="progressText"
+          class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gray-700">0%</div>
+      </div>
+
+      <nav id="week-nav" class="space-y-2">
+        <!-- Navigation items will be injected here by JS -->
+      </nav>
+
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Resources</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="text-blue-600 hover:underline">LeetCode</a></li>
+          <li><a href="#" class="text-blue-600 hover:underline">Python Official Docs</a></li>
+          <li><a href="#" class="text-blue-600 hover:underline">GeeksforGeeks Python DSA</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content" class="flex-1 p-6 md:p-10 overflow-y-auto">
+      <!-- Content will be injected here by JS -->
+    </main>
+  </div>
+
+  <script>
+    const roadmapData = [
+      {
+        week: 1,
+        title: "Python Fundamentals for DSA",
+        intro: "This week focuses on the core Python features that are essential for solving DSA problems efficiently. A strong grasp of these fundamentals will make implementing complex algorithms much more straightforward.",
+        topics: [
+          {
+            title: "Core Data Types",
+            items: [
+              "Numbers (int, float), Strings, Booleans.",
+              "Lists: mutable, ordered sequence.",
+              "Tuples: immutable, ordered sequence.",
+              "Sets: mutable, unordered, unique elements.",
+              "Dictionaries: mutable, unordered, key-value pairs."
+            ],
+            diagram: 'pythonDataStructures'
+          },
+          {
+            title: "Pythonic Constructs",
+            items: [
+              "List Comprehensions.",
+              "Lambda Functions.",
+              "Map, Filter, Reduce.",
+              "Slicing (lists, strings)."
+            ]
+          }
+        ]
+      },
+      {
+        week: 2,
+        title: "Python Collections & Complexity",
+        intro: "We'll dive deeper into Python's powerful `collections` module and introduce complexity analysis, a critical skill for evaluating the efficiency of your code in interviews.",
+        topics: [
+          {
+            title: "Advanced Collections",
+            items: [
+              "collections.deque: for efficient stacks and queues.",
+              "collections.Counter: for counting hashable objects.",
+              "collections.defaultdict: for handling missing keys."
+            ]
+          },
+          {
+            title: "Complexity Analysis",
+            items: [
+              "Time Complexity and Space Complexity.",
+              "Asymptotic Notations: Big O, Big Omega, Big Theta.",
+              "Analyzing complexity of Python's list, dict, and set operations."
+            ]
+          }
+        ]
+      },
+      {
+        week: 3,
+        title: "Recursion, Searching & Sorting",
+        intro: "This week covers the powerful concept of recursion and the most fundamental algorithms for searching and sorting data. Understanding their mechanics and trade-offs is a must for any coding interview.",
+        topics: [
+          {
+            title: "Recursion",
+            items: [
+              "What is Recursion? Base case and recursive step.",
+              "Solving problems using recursion (e.g., Factorial, Fibonacci)."
+            ]
+          },
+          {
+            title: "Searching Algorithms",
+            items: [
+              "Linear Search.",
+              "Binary Search (and Python's `bisect` module)."
+            ]
+          },
+          {
+            title: "Sorting Algorithms",
+            items: [
+              "Understanding Bubble Sort, Selection Sort, Insertion Sort.",
+              "Merge Sort and Quick Sort (conceptual understanding is key).",
+              "How Python's `sort()` and `sorted()` work (Timsort)."
+            ],
+            practice: "Implement binary search. Implement Merge Sort. Solve recursion problems."
+          }
+        ]
+      },
+      {
+        week: 4,
+        title: "Linear Data Structures",
+        intro: "This week covers fundamental linear data structures. You'll learn how they store data sequentially and how to implement them in Python, leveraging built-in types and modules where appropriate.",
+        topics: [
+          {
+            title: "Linked Lists",
+            items: [
+              "Implementing a Node class.",
+              "Singly Linked List: Operations (insertion, deletion, traversal).",
+              "Doubly Linked List.",
+              "Solving problems like cycle detection."
+            ]
+          },
+          {
+            title: "Stacks",
+            items: [
+              "Stack operations (LIFO).",
+              "Implementation using Python lists and `collections.deque`.",
+              "Applications of Stacks (e.g., balancing parentheses)."
+            ]
+          },
+          {
+            title: "Queues",
+            items: [
+              "Queue operations (FIFO).",
+              "Implementation using `collections.deque`.",
+              "Priority Queues and Python's `heapq` module."
+            ]
+          }
+        ]
+      },
+      {
+        week: 5,
+        title: "Non-Linear Data Structures: Trees",
+        intro: "We now move to hierarchical data structures. Trees are essential for representing nested data and are fundamental to many efficient search and storage algorithms. We'll focus on their Python implementation.",
+        topics: [
+          {
+            title: "Tree Fundamentals",
+            items: [
+              "Implementing a TreeNode class.",
+              "Binary Trees.",
+              "Tree Traversals: Inorder, Preorder, Postorder, Level Order (BFS)."
+            ]
+          },
+          {
+            title: "Binary Search Trees (BST)",
+            items: [
+              "Properties of a BST.",
+              "Searching, Insertion, and Deletion in a BST.",
+              "Validating a BST."
+            ]
+          },
+          {
+            title: "Heaps",
+            items: [
+              "Heap properties (Min-Heap and Max-Heap).",
+              "Using Python's `heapq` module for heap operations.",
+              "Solving problems with Priority Queues."
+            ],
+            practice: "Solve tree traversal and BST problems on LeetCode. Use `heapq` for heap-based problems."
+          }
+        ]
+      },
+      {
+        week: 6,
+        title: "Non-Linear Data Structures: Graphs",
+        intro: "Graphs are powerful structures used to model networks and relationships. This week covers how to represent graphs in Python and the fundamental algorithms for traversing them.",
+        topics: [
+          {
+            title: "Graph Basics",
+            items: [
+              "Introduction to Graphs (Directed and Undirected).",
+              "Graph Representation: Adjacency List (using dictionaries/defaultdict) and Adjacency Matrix."
+            ]
+          },
+          {
+            title: "Graph Traversal",
+            items: [
+              "Breadth-First Search (BFS) using a queue.",
+              "Depth-First Search (DFS) using recursion or a stack."
+            ]
+          },
+          {
+            title: "Tries",
+            items: [
+              "Implementing a TrieNode class.",
+              "Insertion and Search operations in a Trie."
+            ]
+          }
+        ]
+      },
+      {
+        week: 7,
+        title: "Advanced Algorithms",
+        intro: "This week introduces advanced algorithmic techniques that are often the basis for medium-to-hard interview questions. Focus on understanding the pattern for each paradigm.",
+        topics: [
+          {
+            title: "Greedy Algorithms",
+            items: [
+              "Understanding the Greedy approach.",
+              "Standard problems: Activity Selection, Fractional Knapsack."
+            ]
+          },
+          {
+            title: "Backtracking",
+            items: [
+              "Understanding the Backtracking template.",
+              "Standard problems: N-Queens, Subsets, Permutations."
+            ]
+          },
+          {
+            title: "Shortest Path Algorithms",
+            items: [
+              "Dijkstra's Algorithm (using a priority queue).",
+              "Bellman-Ford Algorithm."
+            ]
+          }
+        ]
+      },
+      {
+        week: 8,
+        title: "Dynamic Programming & Revision",
+        intro: "The final week tackles Dynamic Programming, one of the most challenging but important topics for top companies. The rest of the week is for revision and practice.",
+        topics: [
+          {
+            title: "Dynamic Programming (DP)",
+            items: [
+              "Understanding Overlapping Subproblems and Optimal Substructure.",
+              "Memoization (Top-Down) vs. Tabulation (Bottom-Up).",
+              "Solving key DP problems (e.g., Fibonacci, Coin Change, Longest Common Subsequence)."
+            ]
+          },
+          {
+            title: "Revision",
+            items: [
+              "Review complexities of all data structures and algorithms.",
+              "Solve problems that combine multiple concepts.",
+              "Participate in mock interviews and timed coding challenges."
+            ]
+          }
+        ]
+      }
+    ];
+
+    const state = {
+      progress: JSON.parse(localStorage.getItem('dsaPythonRoadmapProgress')) || {},
+      activeWeek: 1,
+      totalItems: 0,
+      completedItems: 0,
+    };
+
+    let progressChart;
+
+    function saveProgress() {
+      localStorage.setItem('dsaPythonRoadmapProgress', JSON.stringify(state.progress));
+    }
+
+    function calculateProgress() {
+      state.totalItems = 0;
+      state.completedItems = 0;
+      roadmapData.forEach(week => {
+        week.topics.forEach(topic => {
+          topic.items.forEach(item => {
+            state.totalItems++;
+            const itemId = `${week.week}-${topic.title}-${item}`;
+            if (state.progress[itemId]) {
+              state.completedItems++;
+            }
+          });
+        });
+      });
+    }
+
+    function renderNav() {
+      const navEl = document.getElementById('week-nav');
+      navEl.innerHTML = '';
+      roadmapData.forEach(week => {
+        let weekTotal = 0;
+        let weekCompleted = 0;
+        week.topics.forEach(topic => {
+          topic.items.forEach(item => {
+            weekTotal++;
+            const itemId = `${week.week}-${topic.title}-${item}`;
+            if (state.progress[itemId]) {
+              weekCompleted++;
+            }
+          });
+        });
+        const weekPercentage = weekTotal > 0 ? (weekCompleted / weekTotal) * 100 : 0;
+
+        const navItem = document.createElement('div');
+        navItem.className = `nav-item p-3 rounded-lg cursor-pointer transition-colors duration-200 hover:bg-gray-100 ${state.activeWeek === week.week ? 'active' : ''}`;
+        navItem.dataset.week = week.week;
+        navItem.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-semibold text-sm">Week ${week.week}</span>
+                        <span class="text-xs text-gray-500">${Math.round(weekPercentage)}%</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-2">${week.title}</p>
+                    <div class="w-full progress-bar-bg rounded-full h-1.5">
+                        <div class="progress-bar-fill h-1.5 rounded-full" style="width: ${weekPercentage}%"></div>
+                    </div>
+                `;
+        navEl.appendChild(navItem);
+      });
+    }
+
+    function renderPythonDataStructuresDiagram() {
+      const structures = [
+        { name: 'List', props: 'Mutable, Ordered', color: 'border-blue-400 bg-blue-100 text-blue-800' },
+        { name: 'Tuple', props: 'Immutable, Ordered', color: 'border-green-400 bg-green-100 text-green-800' },
+        { name: 'Set', props: 'Mutable, Unordered, Unique', color: 'border-purple-400 bg-purple-100 text-purple-800' },
+        { name: 'Dictionary', props: 'Mutable, Unordered, Key-Value', color: 'border-red-400 bg-red-100 text-red-800' }
+      ];
+      let diagramHTML = `
+                <div class="bg-white p-6 rounded-lg border border-gray-200 mt-6">
+                    <h4 class="font-semibold text-gray-700 mb-4 text-center">Python's Core Data Structures</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            `;
+      structures.forEach(s => {
+        diagramHTML += `
+                    <div class="ds-property ${s.color}">
+                        <h5 class="font-bold text-lg">${s.name}</h5>
+                        <p class="text-sm mt-1">${s.props}</p>
+                    </div>
+                `;
+      });
+      diagramHTML += `</div></div>`;
+      return diagramHTML;
+    }
+
+    function renderContent() {
+      const contentEl = document.getElementById('main-content');
+      const weekData = roadmapData.find(w => w.week === state.activeWeek);
+      if (!weekData) return;
+
+      let contentHTML = `
+                <h2 class="text-3xl font-bold text-gray-800">${weekData.title}</h2>
+                <p class="mt-2 mb-8 text-gray-600 max-w-3xl">${weekData.intro}</p>
+            `;
+
+      weekData.topics.forEach(topic => {
+        contentHTML += `
+                    <details class="bg-white border border-gray-200 rounded-lg mb-4 overflow-hidden" open>
+                        <summary class="p-5 cursor-pointer flex justify-between items-center hover:bg-gray-50">
+                            <h3 class="text-lg font-semibold text-gray-700">${topic.title}</h3>
+                            <div class="arrow text-gray-500 transform transition-transform duration-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </summary>
+                        <div class="p-5 border-t border-gray-200">
+                            <ul class="space-y-3">
+                `;
+        topic.items.forEach(item => {
+          const itemId = `${weekData.week}-${topic.title}-${item}`;
+          const isChecked = state.progress[itemId] ? 'checked' : '';
+          contentHTML += `
+                        <li class="flex items-start">
+                            <input type="checkbox" id="${itemId}" data-itemid="${itemId}" class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" ${isChecked}>
+                            <label for="${itemId}" class="ml-3 text-gray-700">${item}</label>
+                        </li>
+                    `;
+        });
+        contentHTML += '</ul>';
+
+        if (topic.practice) {
+          contentHTML += `
+                        <div class="mt-5 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 rounded-r-lg">
+                            <p><strong>Practice:</strong> ${topic.practice}</p>
+                        </div>
+                    `;
+        }
+
+        if (topic.diagram === 'pythonDataStructures') {
+          contentHTML += renderPythonDataStructuresDiagram();
+        }
+
+        contentHTML += '</div></details>';
+      });
+
+      contentEl.innerHTML = contentHTML;
+    }
+
+    function updateChart() {
+      const percentage = state.totalItems > 0 ? (state.completedItems / state.totalItems) * 100 : 0;
+      document.getElementById('progressText').textContent = `${Math.round(percentage)}%`;
+
+      if (progressChart) {
+        progressChart.data.datasets[0].data = [percentage, 100 - percentage];
+        progressChart.update();
+      } else {
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        progressChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: [percentage, 100 - percentage],
+              backgroundColor: ['#3572A5', '#EAE5E0'],
+              borderWidth: 0,
+              borderRadius: 5,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: {
+              tooltip: { enabled: false },
+              legend: { display: false }
+            },
+            events: []
+          }
+        });
+      }
+    }
+
+    function fullRender() {
+      calculateProgress();
+      renderNav();
+      renderContent();
+      updateChart();
+    }
+
+    document.getElementById('week-nav').addEventListener('click', (e) => {
+      const navItem = e.target.closest('.nav-item');
+      if (navItem) {
+        state.activeWeek = parseInt(navItem.dataset.week);
+        fullRender();
+      }
+    });
+
+    document.getElementById('main-content').addEventListener('change', (e) => {
+      if (e.target.type === 'checkbox') {
+        const itemId = e.target.dataset.itemid;
+        state.progress[itemId] = e.target.checked;
+        saveProgress();
+        fullRender();
+      }
+    });
+
+    // Initial load
+    fullRender();
+
+  </script>
+</body>
+
+</html>

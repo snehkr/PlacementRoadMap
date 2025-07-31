@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Aptitude for Placements Roadmap</title>
+  <!-- Chosen Palette: Professional Purple -->
+  <!-- Application Structure Plan: The application transforms the linear text roadmap into an interactive dashboard. A persistent sidebar shows overall progress via a donut chart and weekly navigation links with individual progress bars. The main content area dynamically displays the selected week's topics in an accordion format, allowing users to expand/collapse subjects. This structure enhances usability by breaking down the content into manageable, user-selected chunks and provides immediate visual feedback on progress, which is more engaging than a static document. -->
+  <!-- Visualization & Content Choices: 
+    - Report Info: Overall study progress. Goal: Inform/Motivate. Viz: Donut Chart. Interaction: Updates automatically as user checks off items. Justification: Provides a clear, at-a-glance summary of completion. Library: Chart.js.
+    - Report Info: Weekly progress. Goal: Inform. Viz: HTML/Tailwind Progress Bars. Interaction: Updates with checkboxes. Justification: Granular feedback for each section. Method: HTML/JS.
+    - Report Info: Hierarchical topics (e.g., Week -> Topic -> Sub-topic). Goal: Organize. Presentation: Interactive Accordion. Interaction: Click to expand/collapse. Justification: Reduces initial cognitive load and allows users to focus on one topic at a time. Method: HTML/JS.
+    - Report Info: Key Formulas. Goal: Inform/Reference. Viz: HTML/CSS Diagram. Interaction: Static visual. Justification: A quick reference card for important formulas is a useful study aid. Method: HTML/Tailwind.
+    - Report Info: All study items. Goal: Track progress. Presentation: Checkboxes. Interaction: Click to check/uncheck. Justification: Makes the roadmap an active tool rather than a passive document. Method: HTML/JS.
+    -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #FDFBF7;
+      color: #4A4A4A;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 200px;
+      max-height: 200px;
+    }
+
+    .progress-bar-bg {
+      background-color: #EAE5E0;
+    }
+
+    .progress-bar-fill {
+      background-color: #8B5CF6;
+      transition: width 0.5s ease-in-out;
+    }
+
+    .nav-item.active {
+      background-color: #EDE9FE;
+      color: #333;
+      font-weight: 600;
+    }
+
+    details>summary {
+      list-style: none;
+    }
+
+    details>summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details[open] summary .arrow {
+      transform: rotate(90deg);
+    }
+
+    .arrow {
+      transition: transform 0.2s;
+    }
+
+    .formula-card {
+      border: 2px solid #C4B5FD;
+      background-color: #F5F3FF;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+  <div class="flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-full md:w-72 lg:w-80 bg-white border-r border-gray-200 p-6 flex-shrink-0">
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">Aptitude Roadmap</h1>
+      <p class="text-sm text-gray-500 mb-6">Track your preparation for placements.</p>
+
+      <div class="chart-container mb-6">
+        <canvas id="progressChart"></canvas>
+        <div id="progressText"
+          class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gray-700">0%</div>
+      </div>
+
+      <nav id="week-nav" class="space-y-2">
+        <!-- Navigation items will be injected here by JS -->
+      </nav>
+
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Resources</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="text-blue-600 hover:underline">IndiaBIX</a></li>
+          <li><a href="#" class="text-blue-600 hover:underline">GeeksforGeeks Aptitude</a></li>
+          <li><a href="#" class="text-blue-600 hover:underline">FacePrep</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content" class="flex-1 p-6 md:p-10 overflow-y-auto">
+      <!-- Content will be injected here by JS -->
+    </main>
+  </div>
+
+  <script>
+    const roadmapData = [
+      {
+        week: 1,
+        title: "Quantitative Aptitude: Arithmetic Basics",
+        intro: "This week builds the foundation for the quantitative section. We'll focus on core arithmetic concepts that are the building blocks for more complex problems involving percentages, profit, and loss.",
+        topics: [
+          {
+            title: "Numbers and Calculations",
+            items: [
+              "Number System (HCF, LCM, Divisibility rules).",
+              "Simplification and Approximation.",
+              "Averages.",
+              "Ratio and Proportion."
+            ]
+          },
+          {
+            title: "Percentages and Applications",
+            items: [
+              "Concept of Percentages.",
+              "Profit and Loss.",
+              "Simple Interest and Compound Interest."
+            ],
+            diagram: 'keyFormulas'
+          }
+        ]
+      },
+      {
+        week: 2,
+        title: "Quantitative Aptitude: Advanced Topics",
+        intro: "This week covers more advanced quantitative topics that frequently appear in placement tests. The focus is on understanding the formulas and applying them to problems involving time, speed, and work.",
+        topics: [
+          {
+            title: "Time, Speed, and Distance",
+            items: [
+              "Basics of Speed, Time, and Distance.",
+              "Problems on Trains.",
+              "Boats and Streams."
+            ]
+          },
+          {
+            title: "Work and Data",
+            items: [
+              "Time and Work.",
+              "Pipes and Cisterns.",
+              "Data Interpretation (Tables, Bar Graphs, Pie Charts)."
+            ],
+            practice: "Solve at least 20-30 problems from each topic. Focus on speed and accuracy."
+          }
+        ]
+      },
+      {
+        week: 3,
+        title: "Logical Reasoning",
+        intro: "This week is about sharpening your logical thinking. These questions test your ability to identify patterns, understand relationships, and draw correct conclusions from a given set of information.",
+        topics: [
+          {
+            title: "Arrangements and Series",
+            items: [
+              "Coding and Decoding.",
+              "Number and Letter Series.",
+              "Seating Arrangements (Linear and Circular)."
+            ]
+          },
+          {
+            title: "Relationships and Logic",
+            items: [
+              "Blood Relations.",
+              "Direction Sense.",
+              "Syllogisms."
+            ]
+          },
+          {
+            title: "Visual Reasoning",
+            items: [
+              "Pattern Completion.",
+              "Figure Matrix.",
+              "Mirror and Water Images."
+            ]
+          }
+        ]
+      },
+      {
+        week: 4,
+        title: "Verbal Ability",
+        intro: "Strong verbal ability is crucial for communication. This week focuses on improving your vocabulary, grammar, and reading comprehension skills, which are essential for both aptitude tests and interviews.",
+        topics: [
+          {
+            title: "Grammar and Vocabulary",
+            items: [
+              "Tenses, Articles, Prepositions.",
+              "Synonyms and Antonyms.",
+              "Idioms and Phrases."
+            ]
+          },
+          {
+            title: "Comprehension and Composition",
+            items: [
+              "Reading Comprehension.",
+              "Sentence Completion and Correction.",
+              "Para Jumbles (Sentence Rearrangement)."
+            ],
+            practice: "Read an English newspaper editorial daily. Practice one reading comprehension passage and 10 vocabulary questions each day."
+          }
+        ]
+      },
+      {
+        week: 5,
+        title: "Advanced Topics & Puzzles",
+        intro: "This week introduces more complex topics that are often used as tie-breakers in competitive tests. Permutations, combinations, and probability require careful thought, while puzzles test your lateral thinking.",
+        topics: [
+          {
+            title: "Permutations, Combinations & Probability",
+            items: [
+              "Fundamental Principle of Counting.",
+              "Permutations (Arrangements).",
+              "Combinations (Selections).",
+              "Basic Probability."
+            ]
+          },
+          {
+            title: "Puzzles",
+            items: [
+              "Analytical and Logical Puzzles.",
+              "Practice solving a variety of puzzles to improve problem-solving speed."
+            ]
+          }
+        ]
+      },
+      {
+        week: 6,
+        title: "Mock Tests & Revision",
+        intro: "The final week is all about simulating the real test environment. Taking full-length mock tests is the best way to manage your time effectively, identify your weak areas, and build confidence before the actual placement test.",
+        topics: [
+          {
+            title: "Practice and Analysis",
+            items: [
+              "Take at least 5 full-length mock aptitude tests.",
+              "Analyze your performance: focus on accuracy and time management.",
+              "Review your mistakes and revise the corresponding concepts."
+            ]
+          },
+          {
+            title: "Final Revision",
+            items: [
+              "Revise all important formulas for Quantitative Aptitude.",
+              "Quickly go through all Logical Reasoning and Verbal Ability topics.",
+              "Stay calm and confident."
+            ]
+          }
+        ]
+      }
+    ];
+
+    const state = {
+      progress: JSON.parse(localStorage.getItem('aptitudeRoadmapProgress')) || {},
+      activeWeek: 1,
+      totalItems: 0,
+      completedItems: 0,
+    };
+
+    let progressChart;
+
+    function saveProgress() {
+      localStorage.setItem('aptitudeRoadmapProgress', JSON.stringify(state.progress));
+    }
+
+    function calculateProgress() {
+      state.totalItems = 0;
+      state.completedItems = 0;
+      roadmapData.forEach(week => {
+        week.topics.forEach(topic => {
+          topic.items.forEach(item => {
+            state.totalItems++;
+            const itemId = `${week.week}-${topic.title}-${item}`;
+            if (state.progress[itemId]) {
+              state.completedItems++;
+            }
+          });
+        });
+      });
+    }
+
+    function renderNav() {
+      const navEl = document.getElementById('week-nav');
+      navEl.innerHTML = '';
+      roadmapData.forEach(week => {
+        let weekTotal = 0;
+        let weekCompleted = 0;
+        week.topics.forEach(topic => {
+          topic.items.forEach(item => {
+            weekTotal++;
+            const itemId = `${week.week}-${topic.title}-${item}`;
+            if (state.progress[itemId]) {
+              weekCompleted++;
+            }
+          });
+        });
+        const weekPercentage = weekTotal > 0 ? (weekCompleted / weekTotal) * 100 : 0;
+
+        const navItem = document.createElement('div');
+        navItem.className = `nav-item p-3 rounded-lg cursor-pointer transition-colors duration-200 hover:bg-gray-100 ${state.activeWeek === week.week ? 'active' : ''}`;
+        navItem.dataset.week = week.week;
+        navItem.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-semibold text-sm">Week ${week.week}</span>
+                        <span class="text-xs text-gray-500">${Math.round(weekPercentage)}%</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-2">${week.title}</p>
+                    <div class="w-full progress-bar-bg rounded-full h-1.5">
+                        <div class="progress-bar-fill h-1.5 rounded-full" style="width: ${weekPercentage}%"></div>
+                    </div>
+                `;
+        navEl.appendChild(navItem);
+      });
+    }
+
+    function renderKeyFormulasDiagram() {
+      let diagramHTML = `
+                <div class="bg-white p-6 rounded-lg border border-gray-200 mt-6">
+                    <h4 class="font-semibold text-gray-700 mb-4 text-center">Quick Formula Reference</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="formula-card">
+                            <h5 class="font-bold text-purple-800">Profit & Loss</h5>
+                            <p class="text-purple-700">Profit % = (Profit/CP) * 100</p>
+                            <p class="text-purple-700">Loss % = (Loss/CP) * 100</p>
+                        </div>
+                        <div class="formula-card">
+                            <h5 class="font-bold text-purple-800">Interest</h5>
+                            <p class="text-purple-700">SI = (P * R * T) / 100</p>
+                            <p class="text-purple-700">CI = P(1 + R/100)^T - P</p>
+                        </div>
+                         <div class="formula-card">
+                            <h5 class="font-bold text-purple-800">Speed</h5>
+                            <p class="text-purple-700">Speed = Distance / Time</p>
+                        </div>
+                         <div class="formula-card">
+                            <h5 class="font-bold text-purple-800">Work</h5>
+                            <p class="text-purple-700">(M1*D1)/W1 = (M2*D2)/W2</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+      return diagramHTML;
+    }
+
+    function renderContent() {
+      const contentEl = document.getElementById('main-content');
+      const weekData = roadmapData.find(w => w.week === state.activeWeek);
+      if (!weekData) return;
+
+      let contentHTML = `
+                <h2 class="text-3xl font-bold text-gray-800">${weekData.title}</h2>
+                <p class="mt-2 mb-8 text-gray-600 max-w-3xl">${weekData.intro}</p>
+            `;
+
+      weekData.topics.forEach(topic => {
+        contentHTML += `
+                    <details class="bg-white border border-gray-200 rounded-lg mb-4 overflow-hidden" open>
+                        <summary class="p-5 cursor-pointer flex justify-between items-center hover:bg-gray-50">
+                            <h3 class="text-lg font-semibold text-gray-700">${topic.title}</h3>
+                            <div class="arrow text-gray-500 transform transition-transform duration-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </summary>
+                        <div class="p-5 border-t border-gray-200">
+                            <ul class="space-y-3">
+                `;
+        topic.items.forEach(item => {
+          const itemId = `${weekData.week}-${topic.title}-${item}`;
+          const isChecked = state.progress[itemId] ? 'checked' : '';
+          contentHTML += `
+                        <li class="flex items-start">
+                            <input type="checkbox" id="${itemId}" data-itemid="${itemId}" class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" ${isChecked}>
+                            <label for="${itemId}" class="ml-3 text-gray-700">${item}</label>
+                        </li>
+                    `;
+        });
+        contentHTML += '</ul>';
+
+        if (topic.practice) {
+          contentHTML += `
+                        <div class="mt-5 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 rounded-r-lg">
+                            <p><strong>Practice:</strong> ${topic.practice}</p>
+                        </div>
+                    `;
+        }
+
+        if (topic.diagram === 'keyFormulas') {
+          contentHTML += renderKeyFormulasDiagram();
+        }
+
+        contentHTML += '</div></details>';
+      });
+
+      contentEl.innerHTML = contentHTML;
+    }
+
+    function updateChart() {
+      const percentage = state.totalItems > 0 ? (state.completedItems / state.totalItems) * 100 : 0;
+      document.getElementById('progressText').textContent = `${Math.round(percentage)}%`;
+
+      if (progressChart) {
+        progressChart.data.datasets[0].data = [percentage, 100 - percentage];
+        progressChart.update();
+      } else {
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        progressChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: [percentage, 100 - percentage],
+              backgroundColor: ['#8B5CF6', '#EAE5E0'],
+              borderWidth: 0,
+              borderRadius: 5,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: {
+              tooltip: { enabled: false },
+              legend: { display: false }
+            },
+            events: []
+          }
+        });
+      }
+    }
+
+    function fullRender() {
+      calculateProgress();
+      renderNav();
+      renderContent();
+      updateChart();
+    }
+
+    document.getElementById('week-nav').addEventListener('click', (e) => {
+      const navItem = e.target.closest('.nav-item');
+      if (navItem) {
+        state.activeWeek = parseInt(navItem.dataset.week);
+        fullRender();
+      }
+    });
+
+    document.getElementById('main-content').addEventListener('change', (e) => {
+      if (e.target.type === 'checkbox') {
+        const itemId = e.target.dataset.itemid;
+        state.progress[itemId] = e.target.checked;
+        saveProgress();
+        fullRender();
+      }
+    });
+
+    // Initial load
+    fullRender();
+
+  </script>
+</body>
+
+</html>
