@@ -5,13 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Placement Preparation Roadmaps</title>
-  <!-- Chosen Palette: Neutral Professional -->
-  <!-- Application Structure Plan: A centralized hub page using a responsive grid layout. Each grid item is a "card" representing a specific subject roadmap. This card-based design is intuitive, scalable, and provides a clear, visual entry point to each detailed study plan. It allows users to easily see all available subjects at a glance and choose their desired path. -->
-  <!-- Visualization & Content Choices: 
-    - Report Info: Collection of all roadmaps. Goal: Organize/Navigate. Viz: Card Grid Layout. Interaction: Click on a card to navigate. Justification: A grid of cards is a standard and highly effective UI pattern for a dashboard or hub page, offering clear separation and easy access to different sections. Method: HTML/Tailwind.
-    -->
-  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,10 +16,21 @@
       font-family: 'Inter', sans-serif;
       background-color: #f8f9fa;
       color: #343a40;
+      overflow-x: hidden;
+    }
+
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
     }
 
     .card {
-      background-color: white;
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(5px);
       border-radius: 0.75rem;
       box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -41,7 +48,8 @@
     }
 
     .card-button {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       padding: 0.5rem 1.25rem;
       border-radius: 0.5rem;
       font-weight: 600;
@@ -52,7 +60,8 @@
 </head>
 
 <body class="antialiased">
-  <div class="container mx-auto px-4 py-12 md:py-16">
+  <canvas id="bg-canvas"></canvas>
+  <div class="container mx-auto px-4 py-12 md:py-16 relative z-10">
     <header class="text-center mb-12">
       <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Placement Preparation Roadmaps</h1>
       <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Your central hub for mastering key computer science
@@ -60,7 +69,6 @@
     </header>
 
     <main id="roadmap-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Roadmap cards will be injected here by JS -->
     </main>
 
     <footer class="text-center mt-16 text-gray-500">
@@ -75,70 +83,96 @@
         description: "Master processes, scheduling, memory management, and synchronization.",
         link: "pages/os_roadmap_spa_v1.html",
         color: "bg-blue-600 hover:bg-blue-700",
-        borderColor: "border-blue-200"
+        borderColor: "border-blue-200",
+        icon: "fas fa-cogs"
       },
       {
         title: "DBMS & SQL",
         description: "Learn database design, normalization, and advanced SQL queries.",
         link: "pages/dbms_roadmap_spa_v1.html",
         color: "bg-indigo-600 hover:bg-indigo-700",
-        borderColor: "border-indigo-200"
+        borderColor: "border-indigo-200",
+        icon: "fas fa-database"
       },
       {
         title: "Computer Networks",
         description: "Understand the OSI model, TCP/IP, and key application layer protocols.",
         link: "pages/cn_roadmap_spa_v1.html",
         color: "bg-teal-600 hover:bg-teal-700",
-        borderColor: "border-teal-200"
+        borderColor: "border-teal-200",
+        icon: "fas fa-network-wired"
       },
       {
         title: "DSA & OOPS",
         description: "Build a strong foundation in data structures, algorithms, and OOPS principles.",
         link: "pages/dsa_oops_roadmap_spa_v1.html",
         color: "bg-emerald-600 hover:bg-emerald-700",
-        borderColor: "border-emerald-200"
+        borderColor: "border-emerald-200",
+        icon: "fas fa-project-diagram"
       },
       {
         title: "DSA in Python",
         description: "Solve DSA problems efficiently using Python's powerful features and libraries.",
         link: "pages/dsa_python_roadmap_spa_v1.html",
         color: "bg-sky-600 hover:bg-sky-700",
-        borderColor: "border-sky-200"
+        borderColor: "border-sky-200",
+        icon: "fab fa-python"
       },
       {
         title: "MongoDB",
         description: "Explore NoSQL concepts, data modeling, and the aggregation framework.",
         link: "pages/mongodb_roadmap_spa_v1.html",
         color: "bg-green-600 hover:bg-green-700",
-        borderColor: "border-green-200"
+        borderColor: "border-green-200",
+        icon: "fas fa-leaf"
       },
       {
         title: "MySQL",
         description: "Deep dive into the world's most popular open-source relational database.",
         link: "pages/mysql_roadmap_spa_v1.html",
         color: "bg-orange-500 hover:bg-orange-600",
-        borderColor: "border-orange-200"
+        borderColor: "border-orange-200",
+        icon: "fas fa-database"
       },
       {
         title: "Python (Basic to Advanced)",
         description: "A complete guide to the Python language for aspiring developers and data scientists.",
         link: "pages/python_full_roadmap_spa_v1.html",
         color: "bg-yellow-500 hover:bg-yellow-600",
-        borderColor: "border-yellow-200"
+        borderColor: "border-yellow-200",
+        icon: "fab fa-python"
       },
       {
         title: "HR Interview",
         description: "Prepare for behavioral questions, company research, and salary negotiation.",
         link: "pages/hr_interview_roadmap_spa_v1.html",
         color: "bg-rose-500 hover:bg-rose-600",
-        borderColor: "border-rose-200"
+        borderColor: "border-rose-200",
+        icon: "fas fa-user-tie"
       },
       {
         title: "Aptitude (All Sections)",
         description: "Sharpen your quantitative, logical, and verbal skills for aptitude tests.",
         link: "pages/aptitude_roadmap_spa_v1.html",
         color: "bg-purple-600 hover:bg-purple-700",
-        borderColor: "border-purple-200"
+        borderColor: "border-purple-200",
+        icon: "fas fa-brain"
+      },
+      {
+        title: "Java (Basic to Advanced)",
+        description: "Comprehensive Java programming from fundamentals to advanced concepts.",
+        link: "pages/java_roadmap_spa_v1.html",
+        color: "bg-pink-500 hover:bg-pink-600",
+        borderColor: "border-pink-200",
+        icon: "fab fa-java"
+      },
+      {
+        title: "LeetCode Problems",
+        description: "Practice coding problems on LeetCode to enhance your problem-solving skills.",
+        link: "pages/leetcode_roadmap_spa_v1.html",
+        color: "bg-cyan-600 hover:bg-cyan-700",
+        borderColor: "border-cyan-200",
+        icon: "fas fa-code"
       }
     ];
 
@@ -149,19 +183,55 @@
         const card = document.createElement('div');
         card.className = `card flex flex-col p-6 ${roadmap.borderColor}`;
         card.innerHTML = `
-                    <div class="flex-grow">
-                        <h2 class="card-title text-gray-800">${roadmap.title}</h2>
-                        <p class="mt-2 text-gray-600">${roadmap.description}</p>
-                    </div>
-                    <div class="mt-6">
-                        <a href="${roadmap.link}" class="card-button text-white ${roadmap.color}">
-                            Start Learning &rarr;
-                        </a>
-                    </div>
-                `;
+          <div class="flex-grow">
+            <i class="${roadmap.icon} text-5xl mb-4 ${roadmap.color.split(' ')[0].replace('bg', 'text')}"></i>
+            <h2 class="card-title text-gray-800">${roadmap.title}</h2>
+            <p class="mt-2 text-gray-600">${roadmap.description}</p>
+          </div>
+          <div class="mt-6">
+            <a href="${roadmap.link}" class="card-button text-white ${roadmap.color}">
+              Start Learning <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        `;
         gridEl.appendChild(card);
       });
     }
+
+    // Three.js background animation
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const geometry = new THREE.BufferGeometry();
+    const vertices = [];
+    for (let i = 0; i < 10000; i++) {
+      vertices.push(THREE.MathUtils.randFloatSpread(2000)); // x
+      vertices.push(THREE.MathUtils.randFloatSpread(2000)); // y
+      vertices.push(THREE.MathUtils.randFloatSpread(2000)); // z
+    }
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    const material = new THREE.PointsMaterial({ color: 0x888888, size: 2 });
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      points.rotation.x += 0.0001;
+      points.rotation.y += 0.0001;
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
     // Initial render
     renderCards();

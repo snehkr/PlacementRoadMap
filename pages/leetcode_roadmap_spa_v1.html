@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive LeetCode Placement Roadmap</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #FDFBF7;
+      color: #4A4A4A;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 200px;
+      max-height: 200px;
+    }
+
+    .progress-bar-bg {
+      background-color: #EAE5E0;
+    }
+
+    .progress-bar-fill {
+      background-color: #FFA116;
+      transition: width 0.5s ease-in-out;
+    }
+
+    .nav-item.active {
+      background-color: #FFEFCF;
+      color: #333;
+      font-weight: 600;
+    }
+
+    details>summary {
+      list-style: none;
+    }
+
+    details>summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details[open] summary .arrow {
+      transform: rotate(90deg);
+    }
+
+    .arrow {
+      transition: transform 0.2s;
+    }
+
+    .code-block {
+      background-color: #2d2d2d;
+      color: #f8f8f2;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+  <div class="flex flex-col md:flex-row min-h-screen">
+    <aside class="w-full md:w-72 lg:w-80 bg-white border-r border-gray-200 p-6 flex-shrink-0">
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">LeetCode Roadmap</h1>
+      <p class="text-sm text-gray-500 mb-6">Track your preparation for placements.</p>
+
+      <div class="chart-container mb-6">
+        <canvas id="progressChart"></canvas>
+        <div id="progressText"
+          class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gray-700">0%</div>
+      </div>
+
+      <nav id="week-nav" class="space-y-2">
+      </nav>
+
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Resources</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://leetcode.com/" class="text-blue-600 hover:underline" target="_blank">LeetCode
+              Official</a></li>
+          <li><a href="https://neetcode.io/" class="text-blue-600 hover:underline" target="_blank">NeetCode</a></li>
+          <li><a
+              href="https://www.geeksforgeeks.org/must-do-coding-questions-for-companies-like-amazon-microsoft-adobe/"
+              class="text-blue-600 hover:underline" target="_blank">GeeksforGeeks Must Do</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <main id="main-content" class="flex-1 p-6 md:p-10 overflow-y-auto">
+    </main>
+  </div>
+
+  <script>
+    const roadmapData = [
+      {
+        week: 1,
+        title: "Arrays & Hashing",
+        intro: "The foundation of data structures. This week focuses on mastering array manipulations and using hash maps for efficient lookups. These are the most frequently asked topics in interviews.",
+        topics: [
+          {
+            title: "Techniques & Concepts",
+            items: [
+              "Using HashMaps/Dictionaries to store counts and check for existence in O(1) time.",
+              "Understanding tradeoffs between arrays (fast access) and hashmaps (fast search).",
+              "Prefix sums for efficient range query calculations."
+            ]
+          },
+          {
+            title: "Code Templates",
+            codes: {
+              cpp: `// Two Sum using HashMap
+#include <vector>
+#include <unordered_map>
+std::vector<int> twoSum(std::vector<int>& nums, int target) {
+    std::unordered_map<int, int> map;
+    for (int i = 0; i < nums.size(); ++i) {
+        int complement = target - nums[i];
+        if (map.count(complement)) {
+            return {map[complement], i};
+        }
+        map[nums[i]] = i;
+    }
+    return {};
+}`,
+              java: `// Two Sum using HashMap
+import java.util.HashMap;
+import java.util.Map;
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[] { map.get(complement), i };
+            }
+            map.put(nums[i], i);
+        }
+        return new int[0];
+    }
+}`,
+              python: `# Two Sum using Dictionary
+def two_sum(nums, target):
+    num_map = {}
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in num_map:
+            return [num_map[complement], i]
+        num_map[num] = i
+    return []`
+            }
+          },
+          {
+            title: "Practice Questions",
+            questions: [
+              { name: "Two Sum", difficulty: "Easy", link: "https://leetcode.com/problems/two-sum/" },
+              { name: "Contains Duplicate", difficulty: "Easy", link: "https://leetcode.com/problems/contains-duplicate/" },
+              { name: "Valid Anagram", difficulty: "Easy", link: "https://leetcode.com/problems/valid-anagram/" },
+              { name: "Group Anagrams", difficulty: "Medium", link: "https://leetcode.com/problems/group-anagrams/" },
+              { name: "Top K Frequent Elements", difficulty: "Medium", link: "https://leetcode.com/problems/top-k-frequent-elements/" },
+              { name: "Longest Consecutive Sequence", difficulty: "Medium", link: "https://leetcode.com/problems/longest-consecutive-sequence/" }
+            ]
+          }
+        ]
+      },
+      {
+        week: 2,
+        title: "Two Pointers & Sliding Window",
+        intro: "These powerful techniques are used to solve array and string problems with optimal time complexity by avoiding nested loops. Master these to impress your interviewers.",
+        topics: [
+          {
+            title: "Techniques & Concepts",
+            items: [
+              "Two Pointers: Using two pointers moving towards each other, away from each other, or at different speeds to process data.",
+              "Sliding Window: A sub-array or sub-string that moves over a larger data structure. The window can be of fixed or variable size.",
+              "Use cases: Palindrome checks, finding pairs, sub-array problems."
+            ]
+          },
+          {
+            title: "Code Templates",
+            codes: {
+              cpp: `// Sliding Window for finding max sum of subarray size k
+int maxSum = 0, windowSum = 0;
+int windowStart = 0;
+for (int windowEnd = 0; windowEnd < arr.size(); windowEnd++) {
+    windowSum += arr[windowEnd];
+    if (windowEnd >= k - 1) {
+        maxSum = max(maxSum, windowSum);
+        windowSum -= arr[windowStart];
+        windowStart++;
+    }
+}`,
+              java: `// Sliding Window for finding max sum of subarray size k
+int maxSum = 0, windowSum = 0;
+int windowStart = 0;
+for (int windowEnd = 0; windowEnd < arr.length; windowEnd++) {
+    windowSum += arr[windowEnd];
+    if (windowEnd >= k - 1) {
+        maxSum = Math.max(maxSum, windowSum);
+        windowSum -= arr[windowStart];
+        windowStart++;
+    }
+}`,
+              python: `# Sliding Window for finding max sum of subarray size k
+max_sum, window_sum = 0, 0
+window_start = 0
+for window_end in range(len(arr)):
+    window_sum += arr[window_end]
+    if window_end >= k - 1:
+        max_sum = max(max_sum, window_sum)
+        window_sum -= arr[window_start]
+        window_start += 1`
+            }
+          },
+          {
+            title: "Practice Questions",
+            questions: [
+              { name: "Valid Palindrome", difficulty: "Easy", link: "https://leetcode.com/problems/valid-palindrome/" },
+              { name: "Two Sum II - Input Array Is Sorted", difficulty: "Medium", link: "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" },
+              { name: "3Sum", difficulty: "Medium", link: "https://leetcode.com/problems/3sum/" },
+              { name: "Container With Most Water", difficulty: "Medium", link: "https://leetcode.com/problems/container-with-most-water/" },
+              { name: "Longest Substring Without Repeating Characters", difficulty: "Medium", link: "https://leetcode.com/problems/longest-substring-without-repeating-characters/" },
+              { name: "Sliding Window Maximum", difficulty: "Hard", link: "https://leetcode.com/problems/sliding-window-maximum/" }
+            ]
+          }
+        ]
+      },
+      {
+        week: 3,
+        title: "Linked Lists & Stacks",
+        intro: "This week covers two fundamental linear data structures. Linked lists test your pointer manipulation skills, while stacks are crucial for problems involving nested structures or reverse order processing.",
+        topics: [
+          {
+            title: "Techniques & Concepts",
+            items: [
+              "Linked Lists: Using dummy nodes to simplify edge cases (e.g., head insertion/deletion). The fast and slow pointer technique for cycle detection and finding the middle element.",
+              "Stacks: LIFO (Last-In-First-Out) principle. Used for parsing expressions, traversing trees/graphs (DFS), and backtracking."
+            ]
+          },
+          {
+            title: "Code Templates",
+            codes: {
+              cpp: `// Valid Parentheses using Stack
+#include <stack>
+#include <string>
+#include <unordered_map>
+bool isValid(std::string s) {
+    std::stack<char> st;
+    std::unordered_map<char, char> map = {{')', '('}, {']', '['}, {'}', '{'}};
+    for (char c : s) {
+        if (map.count(c)) {
+            if (st.empty() || st.top() != map[c]) return false;
+            st.pop();
+        } else {
+            st.push(c);
+        }
+    }
+    return st.empty();
+}`,
+              java: `// Valid Parentheses using Stack
+import java.util.Stack;
+class Solution {
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(') stack.push(')');
+            else if (c == '{') stack.push('}');
+            else if (c == '[') stack.push(']');
+            else if (stack.isEmpty() || stack.pop() != c) return false;
+        }
+        return stack.isEmpty();
+    }
+}`,
+              python: `# Valid Parentheses using Stack
+def is_valid(s):
+    stack = []
+    mapping = {")": "(", "}": "{", "]": "["}
+    for char in s:
+        if char in mapping:
+            top_element = stack.pop() if stack else '#'
+            if mapping[char] != top_element:
+                return False
+        else:
+            stack.append(char)
+    return not stack`
+            }
+          },
+          {
+            title: "Practice Questions",
+            questions: [
+              { name: "Reverse Linked List", difficulty: "Easy", link: "https://leetcode.com/problems/reverse-linked-list/" },
+              { name: "Merge Two Sorted Lists", difficulty: "Easy", link: "https://leetcode.com/problems/merge-two-sorted-lists/" },
+              { name: "Valid Parentheses", difficulty: "Easy", link: "https://leetcode.com/problems/valid-parentheses/" },
+              { name: "Linked List Cycle", difficulty: "Easy", link: "https://leetcode.com/problems/linked-list-cycle/" },
+              { name: "Reorder List", difficulty: "Medium", link: "https://leetcode.com/problems/reorder-list/" },
+              { name: "LRU Cache", difficulty: "Medium", link: "https://leetcode.com/problems/lru-cache/" },
+              { name: "Merge k Sorted Lists", difficulty: "Hard", link: "https://leetcode.com/problems/merge-k-sorted-lists/" }
+            ]
+          }
+        ]
+      },
+      {
+        week: 4,
+        title: "Trees & Tries",
+        intro: "Trees are foundational non-linear data structures used to represent hierarchical data. Tries are specialized trees for efficient string and prefix operations. This week is all about traversal, validation, and construction algorithms.",
+        topics: [
+          {
+            title: "Techniques & Concepts",
+            items: [
+              "Tree Traversals: Understand Depth-First Search (DFS) variants (In-order, Pre-order, Post-order) and Breadth-First Search (BFS) or Level-order traversal.",
+              "Binary Search Trees (BST): Know the properties and how to perform search, insertion, and deletion.",
+              "Tries: Understand the node structure and how to implement insert, search, and startsWith methods."
+            ]
+          },
+          {
+            title: "Code Templates",
+            codes: {
+              cpp: `// Level Order Traversal (BFS) of a Binary Tree
+#include <vector>
+#include <queue>
+struct TreeNode { int val; TreeNode *left; TreeNode *right; };
+std::vector<std::vector<int>> levelOrder(TreeNode* root) {
+    if (!root) return {};
+    std::vector<std::vector<int>> result;
+    std::queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        int levelSize = q.size();
+        std::vector<int> currentLevel;
+        for (int i = 0; i < levelSize; ++i) {
+            TreeNode* node = q.front();
+            q.pop();
+            currentLevel.push_back(node->val);
+            if (node->left) q.push(node->left);
+            if (node->right) q.push(node->right);
+        }
+        result.push_back(currentLevel);
+    }
+    return result;
+}`,
+              java: `// Level Order Traversal (BFS) of a Binary Tree
+import java.util.*;
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) return result;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            List<Integer> currentLevel = new ArrayList<>();
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode node = queue.poll();
+                currentLevel.add(node.val);
+                if (node.left != null) queue.add(node.left);
+                if (node.right != null) queue.add(node.right);
+            }
+            result.add(currentLevel);
+        }
+        return result;
+    }
+}`,
+              python: `# Level Order Traversal (BFS) of a Binary Tree
+from collections import deque
+def level_order(root):
+    if not root:
+        return []
+    result = []
+    queue = deque([root])
+    while queue:
+        level_size = len(queue)
+        current_level = []
+        for _ in range(level_size):
+            node = queue.popleft()
+            current_level.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        result.append(current_level)
+    return result`
+            }
+          },
+          {
+            title: "Practice Questions",
+            questions: [
+              { name: "Maximum Depth of Binary Tree", difficulty: "Easy", link: "https://leetcode.com/problems/maximum-depth-of-binary-tree/" },
+              { name: "Same Tree", difficulty: "Easy", link: "https://leetcode.com/problems/same-tree/" },
+              { name: "Invert Binary Tree", difficulty: "Easy", link: "https://leetcode.com/problems/invert-binary-tree/" },
+              { name: "Validate Binary Search Tree", difficulty: "Medium", link: "https://leetcode.com/problems/validate-binary-search-tree/" },
+              { name: "Kth Smallest Element in a BST", difficulty: "Medium", link: "https://leetcode.com/problems/kth-smallest-element-in-a-bst/" },
+              { name: "Construct Binary Tree from Preorder and Inorder Traversal", difficulty: "Medium", link: "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/" },
+              { name: "Implement Trie (Prefix Tree)", difficulty: "Medium", link: "https://leetcode.com/problems/implement-trie-prefix-tree/" },
+              { name: "Binary Tree Maximum Path Sum", difficulty: "Hard", link: "https://leetcode.com/problems/binary-tree-maximum-path-sum/" },
+              { name: "Word Search II", difficulty: "Hard", link: "https://leetcode.com/problems/word-search-ii/" }
+            ]
+          }
+        ]
+      },
+      {
+        week: 5,
+        title: "Heaps & Priority Queues",
+        intro: "Heaps are tree-based data structures that satisfy the heap property. They are essential for implementing priority queues, which are crucial for solving problems involving scheduling, finding k-th elements, and graph algorithms like Dijkstra's.",
+        topics: [
+          {
+            title: "Techniques & Concepts",
+            items: [
+              "Understanding Min-Heap and Max-Heap properties.",
+              "Using heaps to find the smallest or largest elements efficiently.",
+              "Common applications: finding the k-th largest/smallest element, median of a data stream.",
+              "Leveraging built-in library functions for heaps (e.g., `priority_queue` in C++, `PriorityQueue` in Java, `heapq` in Python)."
+            ]
+          },
+          {
+            title: "Code Templates",
+            codes: {
+              cpp: `// Kth Largest Element in an Array using Min-Heap
+#include <vector>
+#include <queue>
+int findKthLargest(std::vector<int>& nums, int k) {
+    std::priority_queue<int, std::vector<int>, std::greater<int>> minHeap;
+    for (int num : nums) {
+        minHeap.push(num);
+        if (minHeap.size() > k) {
+            minHeap.pop();
+        }
+    }
+    return minHeap.top();
+}`,
+              java: `// Kth Largest Element in an Array using Min-Heap
+import java.util.PriorityQueue;
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        for (int num : nums) {
+            minHeap.add(num);
+            if (minHeap.size() > k) {
+                minHeap.poll();
+            }
+        }
+        return minHeap.peek();
+    }
+}`,
+              python: `# Kth Largest Element in an Array using Min-Heap
+import heapq
+def find_kth_largest(nums, k):
+    min_heap = []
+    for num in nums:
+        heapq.heappush(min_heap, num)
+        if len(min_heap) > k:
+            heapq.heappop(min_heap)
+    return min_heap[0]`
+            }
+          },
+          {
+            title: "Practice Questions",
+            questions: [
+              { name: "Kth Largest Element in a Stream", difficulty: "Easy", link: "https://leetcode.com/problems/kth-largest-element-in-a-stream/" },
+              { name: "Last Stone Weight", difficulty: "Easy", link: "https://leetcode.com/problems/last-stone-weight/" },
+              { name: "Kth Largest Element in an Array", difficulty: "Medium", link: "https://leetcode.com/problems/kth-largest-element-in-an-array/" },
+              { name: "Top K Frequent Elements", difficulty: "Medium", link: "https://leetcode.com/problems/top-k-frequent-elements/" },
+              { name: "Find Median from Data Stream", difficulty: "Hard", link: "https://leetcode.com/problems/find-median-from-data-stream/" },
+              { name: "Merge k Sorted Lists", difficulty: "Hard", link: "https://leetcode.com/problems/merge-k-sorted-lists/" }
+            ]
+          }
+        ]
+      },
+      {
+        week: 6,
+        title: "Graphs & Advanced Topics",
+        intro: "Graphs are used to model networks and relationships. This week covers essential graph traversal algorithms (BFS, DFS) and introduces other advanced concepts like topological sort and union-find, which are common in interviews.",
+        topics: [
+          {
+            title: "Techniques & Concepts",
+            items: [
+              "Graph Representations: Adjacency List vs. Adjacency Matrix.",
+              "Breadth-First Search (BFS) for shortest path in unweighted graphs.",
+              "Depth-First Search (DFS) for pathfinding, cycle detection, and topological sorting.",
+              "Union-Find (Disjoint Set Union) for finding connected components and cycles efficiently."
+            ]
+          },
+          {
+            title: "Code Templates",
+            codes: {
+              cpp: `// Number of Islands using DFS
+void dfs(vector<vector<char>>& grid, int r, int c) {
+    if (r < 0 || r >= grid.size() || c < 0 || c >= grid[0].size() || grid[r][c] == '0') {
+        return;
+    }
+    grid[r][c] = '0'; // Mark as visited
+    dfs(grid, r + 1, c);
+    dfs(grid, r - 1, c);
+    dfs(grid, r, c + 1);
+    dfs(grid, r, c - 1);
+}
+int numIslands(vector<vector<char>>& grid) {
+    int count = 0;
+    for (int i = 0; i < grid.size(); ++i) {
+        for (int j = 0; j < grid[0].size(); ++j) {
+            if (grid[i][j] == '1') {
+                dfs(grid, i, j);
+                count++;
+            }
+        }
+    }
+    return count;
+}`,
+              java: `// Number of Islands using DFS
+class Solution {
+    public int numIslands(char[][] grid) {
+        int count = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '1') {
+                    dfs(grid, i, j);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    private void dfs(char[][] grid, int r, int c) {
+        if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length || grid[r][c] == '0') {
+            return;
+        }
+        grid[r][c] = '0'; // Mark as visited
+        dfs(grid, r + 1, c);
+        dfs(grid, r - 1, c);
+        dfs(grid, r, c + 1);
+        dfs(grid, r, c - 1);
+    }
+}`,
+              python: `# Number of Islands using DFS
+def num_islands(grid):
+    def dfs(r, c):
+        if not (0 <= r < len(grid) and 0 <= c < len(grid[0]) and grid[r][c] == '1'):
+            return
+        grid[r][c] = '0' # Mark as visited
+        dfs(r + 1, c)
+        dfs(r - 1, c)
+        dfs(r, c + 1)
+        dfs(r, c - 1)
+
+    count = 0
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == '1':
+                dfs(i, j)
+                count += 1
+    return count`
+            }
+          },
+          {
+            title: "Practice Questions",
+            questions: [
+              { name: "Number of Islands", difficulty: "Medium", link: "https://leetcode.com/problems/number-of-islands/" },
+              { name: "Clone Graph", difficulty: "Medium", link: "https://leetcode.com/problems/clone-graph/" },
+              { name: "Course Schedule", difficulty: "Medium", link: "https://leetcode.com/problems/course-schedule/" },
+              { name: "Pacific Atlantic Water Flow", difficulty: "Medium", link: "https://leetcode.com/problems/pacific-atlantic-water-flow/" },
+              { name: "Number of Connected Components in an Undirected Graph", difficulty: "Medium", link: "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/" },
+              { name: "Word Ladder", difficulty: "Hard", link: "https://leetcode.com/problems/word-ladder/" }
+            ]
+          }
+        ]
+      },
+      {
+        week: 7,
+        title: "Backtracking & Recursion",
+        intro: "Backtracking is a technique for finding all (or some) solutions to computational problems, notably constraint satisfaction problems. It incrementally builds candidates for the solutions, and abandons a candidate (\"backtracks\") as soon as it determines that the candidate cannot possibly be completed to a valid solution.",
+        topics: [
+          {
+            title: "Techniques & Concepts",
+            items: [
+              "Recognizing a backtracking problem: generating all permutations, combinations, or subsets.",
+              "The backtracking template: choose, explore, unchoose.",
+              "Pruning the search space to optimize the solution."
+            ]
+          },
+          {
+            title: "Code Templates",
+            codes: {
+              cpp: `// Subsets using Backtracking
+#include <vector>
+void backtrack(std::vector<std::vector<int>>& result, std::vector<int>& temp, const std::vector<int>& nums, int start) {
+    result.push_back(temp);
+    for (int i = start; i < nums.size(); ++i) {
+        temp.push_back(nums[i]);
+        backtrack(result, temp, nums, i + 1);
+        temp.pop_back(); // backtrack
+    }
+}
+std::vector<std::vector<int>> subsets(std::vector<int>& nums) {
+    std::vector<std::vector<int>> result;
+    std::vector<int> temp;
+    backtrack(result, temp, nums, 0);
+    return result;
+}`,
+              java: `// Subsets using Backtracking
+import java.util.*;
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(result, new ArrayList<>(), nums, 0);
+        return result;
+    }
+    private void backtrack(List<List<Integer>> result, List<Integer> tempList, int[] nums, int start) {
+        result.add(new ArrayList<>(tempList));
+        for (int i = start; i < nums.length; i++) {
+            tempList.add(nums[i]);
+            backtrack(result, tempList, nums, i + 1);
+            tempList.remove(tempList.size() - 1); // backtrack
+        }
+    }
+}`,
+              python: `# Subsets using Backtracking
+def subsets(nums):
+    def backtrack(start, current_subset):
+        result.append(current_subset[:])
+        for i in range(start, len(nums)):
+            current_subset.append(nums[i])
+            backtrack(i + 1, current_subset)
+            current_subset.pop() # backtrack
+    
+    result = []
+    backtrack(0, [])
+    return result`
+            }
+          },
+          {
+            title: "Practice Questions",
+            questions: [
+              { name: "Subsets", difficulty: "Medium", link: "https://leetcode.com/problems/subsets/" },
+              { name: "Combination Sum", difficulty: "Medium", link: "https://leetcode.com/problems/combination-sum/" },
+              { name: "Permutations", difficulty: "Medium", link: "https://leetcode.com/problems/permutations/" },
+              { name: "Word Search", difficulty: "Medium", link: "https://leetcode.com/problems/word-search/" },
+              { name: "N-Queens", difficulty: "Hard", link: "https://leetcode.com/problems/n-queens/" }
+            ]
+          }
+        ]
+      },
+      {
+        week: 8,
+        title: "Dynamic Programming",
+        intro: "Dynamic Programming (DP) is a method for solving complex problems by breaking them down into simpler subproblems. It is applicable to problems exhibiting the properties of overlapping subproblems and optimal substructure. Mastering DP is often the key to cracking interviews at top tech companies.",
+        topics: [
+          {
+            title: "Techniques & Concepts",
+            items: [
+              "Identifying DP problems: Overlapping subproblems and optimal substructure.",
+              "Memoization (Top-Down): Solving problems recursively while caching results.",
+              "Tabulation (Bottom-Up): Solving problems iteratively by filling up a DP table.",
+              "Understanding 1D and 2D DP patterns."
+            ]
+          },
+          {
+            title: "Code Templates",
+            codes: {
+              cpp: `// Climbing Stairs using DP (Tabulation)
+#include <vector>
+int climbStairs(int n) {
+    if (n <= 1) return 1;
+    std::vector<int> dp(n + 1);
+    dp[0] = 1;
+    dp[1] = 1;
+    for (int i = 2; i <= n; ++i) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    return dp[n];
+}`,
+              java: `// Climbing Stairs using DP (Tabulation)
+class Solution {
+    public int climbStairs(int n) {
+        if (n <= 1) return 1;
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
+    }
+}`,
+              python: `# Climbing Stairs using DP (Tabulation)
+def climb_stairs(n):
+    if n <= 1:
+        return 1
+    dp = [0] * (n + 1)
+    dp[0] = 1
+    dp[1] = 1
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+    return dp[n]`
+            }
+          },
+          {
+            title: "Practice Questions",
+            questions: [
+              { name: "Climbing Stairs", difficulty: "Easy", link: "https://leetcode.com/problems/climbing-stairs/" },
+              { name: "Coin Change", difficulty: "Medium", link: "https://leetcode.com/problems/coin-change/" },
+              { name: "Longest Increasing Subsequence", difficulty: "Medium", link: "https://leetcode.com/problems/longest-increasing-subsequence/" },
+              { name: "Word Break", difficulty: "Medium", link: "https://leetcode.com/problems/word-break/" },
+              { name: "Unique Paths", difficulty: "Medium", link: "https://leetcode.com/problems/unique-paths/" },
+              { name: "House Robber", difficulty: "Medium", link: "https://leetcode.com/problems/house-robber/" },
+              { name: "Longest Common Subsequence", difficulty: "Medium", link: "https://leetcode.com/problems/longest-common-subsequence/" },
+              { name: "Best Time to Buy and Sell Stock with Cooldown", difficulty: "Medium", link: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/" },
+              { name: "Burst Balloons", difficulty: "Hard", link: "https://leetcode.com/problems/burst-balloons/" },
+              { name: "Edit Distance", difficulty: "Hard", link: "https://leetcode.com/problems/edit-distance/" }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const state = {
+      progress: JSON.parse(localStorage.getItem('leetcodeRoadmapProgress')) || {},
+      activeWeek: 1,
+      totalItems: 0,
+      completedItems: 0,
+    };
+
+    let progressChart;
+
+    function saveProgress() {
+      localStorage.setItem('leetcodeRoadmapProgress', JSON.stringify(state.progress));
+    }
+
+    function calculateProgress() {
+      state.totalItems = 0;
+      state.completedItems = 0;
+      roadmapData.forEach(week => {
+        week.topics.forEach(topic => {
+          if (topic.questions) {
+            topic.questions.forEach(q => {
+              state.totalItems++;
+              const itemId = `${week.week}-${topic.title}-${q.name}`;
+              if (state.progress[itemId]) {
+                state.completedItems++;
+              }
+            });
+          }
+        });
+      });
+    }
+
+    function renderNav() {
+      const navEl = document.getElementById('week-nav');
+      navEl.innerHTML = '';
+      roadmapData.forEach(week => {
+        let weekTotal = 0;
+        let weekCompleted = 0;
+        week.topics.forEach(topic => {
+          if (topic.questions) {
+            topic.questions.forEach(q => {
+              weekTotal++;
+              const itemId = `${week.week}-${topic.title}-${q.name}`;
+              if (state.progress[itemId]) {
+                weekCompleted++;
+              }
+            });
+          }
+        });
+        const weekPercentage = weekTotal > 0 ? (weekCompleted / weekTotal) * 100 : 0;
+
+        const navItem = document.createElement('div');
+        navItem.className = `nav-item p-3 rounded-lg cursor-pointer transition-colors duration-200 hover:bg-gray-100 ${state.activeWeek === week.week ? 'active' : ''}`;
+        navItem.dataset.week = week.week;
+        navItem.innerHTML = `
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-semibold text-sm">Week ${week.week}</span>
+            <span class="text-xs text-gray-500">${Math.round(weekPercentage)}%</span>
+          </div>
+          <p class="text-xs text-gray-600 mb-2">${week.title}</p>
+          <div class="w-full progress-bar-bg rounded-full h-1.5">
+            <div class="progress-bar-fill h-1.5 rounded-full" style="width: ${weekPercentage}%"></div>
+          </div>
+        `;
+        navEl.appendChild(navItem);
+      });
+    }
+
+    function renderContent() {
+      const contentEl = document.getElementById('main-content');
+      const weekData = roadmapData.find(w => w.week === state.activeWeek);
+      if (!weekData) return;
+
+      let contentHTML = `
+        <h2 class="text-3xl font-bold text-gray-800">${weekData.title}</h2>
+        <p class="mt-2 mb-8 text-gray-600 max-w-3xl">${weekData.intro}</p>
+      `;
+
+      weekData.topics.forEach(topic => {
+        contentHTML += `
+          <details class="bg-white border border-gray-200 rounded-lg mb-4 overflow-hidden" open>
+            <summary class="p-5 cursor-pointer flex justify-between items-center hover:bg-gray-50">
+              <h3 class="text-lg font-semibold text-gray-700">${topic.title}</h3>
+              <div class="arrow text-gray-500 transform transition-transform duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </summary>
+            <div class="p-5 border-t border-gray-200">`;
+
+        if (topic.items) {
+          contentHTML += '<ul class="space-y-3">';
+          topic.items.forEach(item => {
+            contentHTML += `<li class="flex items-start"><span class="mr-2 mt-1 text-orange-500">&#10148;</span><span>${item}</span></li>`;
+          });
+          contentHTML += '</ul>';
+        }
+
+        if (topic.codes) {
+          contentHTML += `<h4 class="font-semibold mt-6 mb-2 text-gray-700">C++</h4><pre class="code-block"><code>${topic.codes.cpp.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+          contentHTML += `<h4 class="font-semibold mt-4 mb-2 text-gray-700">Java</h4><pre class="code-block"><code>${topic.codes.java.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+          contentHTML += `<h4 class="font-semibold mt-4 mb-2 text-gray-700">Python</h4><pre class="code-block"><code>${topic.codes.python.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+        }
+
+        if (topic.questions) {
+          contentHTML += '<ul class="space-y-3 mt-6">';
+          topic.questions.forEach(q => {
+            const itemId = `${weekData.week}-${topic.title}-${q.name}`;
+            const isChecked = state.progress[itemId] ? 'checked' : '';
+            const difficultyColor = q.difficulty === 'Easy' ? 'text-green-600' : q.difficulty === 'Medium' ? 'text-yellow-600' : 'text-red-600';
+            contentHTML += `
+              <li class="flex items-center">
+                <input type="checkbox" id="${itemId}" data-itemid="${itemId}" class="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500" ${isChecked}>
+                <label for="${itemId}" class="ml-3 text-gray-700 flex-1">
+                  <a href="${q.link}" target="_blank" class="hover:underline">${q.name}</a>
+                  <span class="ml-2 text-sm font-medium ${difficultyColor}">(${q.difficulty})</span>
+                </label>
+              </li>
+            `;
+          });
+          contentHTML += '</ul>';
+        }
+
+        contentHTML += '</div></details>';
+      });
+
+      contentEl.innerHTML = contentHTML;
+    }
+
+
+    function updateChart() {
+      const percentage = state.totalItems > 0 ? (state.completedItems / state.totalItems) * 100 : 0;
+      document.getElementById('progressText').textContent = `${Math.round(percentage)}%`;
+
+      if (progressChart) {
+        progressChart.data.datasets[0].data = [percentage, 100 - percentage];
+        progressChart.update();
+      } else {
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        progressChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: [percentage, 100 - percentage],
+              backgroundColor: ['#FFA116', '#EAE5E0'],
+              borderWidth: 0,
+              borderRadius: 5,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: {
+              tooltip: { enabled: false },
+              legend: { display: false }
+            },
+            events: []
+          }
+        });
+      }
+    }
+
+    function fullRender() {
+      calculateProgress();
+      renderNav();
+      renderContent();
+      updateChart();
+    }
+
+    document.getElementById('week-nav').addEventListener('click', (e) => {
+      const navItem = e.target.closest('.nav-item');
+      if (navItem) {
+        state.activeWeek = parseInt(navItem.dataset.week);
+        fullRender();
+      }
+    });
+
+    document.getElementById('main-content').addEventListener('change', (e) => {
+      if (e.target.type === 'checkbox') {
+        const itemId = e.target.dataset.itemid;
+        state.progress[itemId] = e.target.checked;
+        saveProgress();
+        fullRender();
+      }
+    });
+
+    // Initial load
+    fullRender();
+
+  </script>
+</body>
+
+</html>
